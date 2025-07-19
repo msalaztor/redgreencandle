@@ -1,0 +1,26 @@
+# Instalar y cargar paquete si no está instalado
+if (!require("quantmod")) install.packages("quantmod")
+library(quantmod)
+
+# Descargar datos diarios de USDT-USD desde Yahoo Finance
+usdt_data <- getSymbols("USDT-USD",
+                        src = "yahoo",
+                        from = "2020-01-01",
+                        to = "2025-07-15",
+                        auto.assign = FALSE)
+
+# Convertir datos diarios a datos mensuales
+usdt_monthly <- to.monthly(usdt_data, indexAt = "lastof", drop.time = TRUE)
+
+# Verifica que tenga columnas OHLC + Volumen
+print(head(usdt_monthly))
+print(colnames(usdt_monthly))
+
+# Graficar velas japonesas mensuales con volumen (si está disponible)
+chartSeries(usdt_monthly,
+            name = "USDT-USD Mensual",
+            type = "candlesticks",
+            theme = chartTheme("white"),
+            up.col = "green",
+            dn.col = "red",
+            TA = "addVo()")
